@@ -5,4 +5,12 @@
 layout: default
 ---
 
+<script>
+{% include scala-js-tutorial-fastopt.js %}
+</script>
+
+
 {% include mycomponent.html %}
+
+
+    
