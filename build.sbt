@@ -2,13 +2,22 @@ import java.nio.file.StandardCopyOption
 
 import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport.fastOptJS
 
+resolvers += Resolver.bintrayRepo("oyvindberg", "ScalablyTyped")
+
+
 enablePlugins(ScalaJSPlugin)
+enablePlugins(ScalaJSBundlerPlugin)
 
 name := "Scala.js Tutorial"
 scalaVersion := "2.12.6" // or any other Scala version >= 2.10.2
 
 // This is an application with a main method
 //scalaJSUseMainModuleInitializer := true
+
+
+libraryDependencies ++= Seq(ScalablyTyped.P.`plotly_dot_js`)
+
+npmDependencies in Compile ++= Seq("plotly_dot_js" -> "1.44")
 
 libraryDependencies += "com.thoughtworks.binding" %%% "dom" % "latest.release"
 
@@ -21,4 +30,3 @@ copyTask := {
   val destinationPath = file("docs/_includes/scala-js-tutorial-fastopt.js").toPath
   java.nio.file.Files.copy(r.data.toPath, destinationPath, StandardCopyOption.REPLACE_EXISTING)
 }
-
