@@ -6,7 +6,7 @@ layout: default
 ---
 
 <script>
-{% include scala-js-tutorial-fastopt.js %}
+{% include scala-js-tutorial-fastopt-bundle.js %}
 </script>
 
 

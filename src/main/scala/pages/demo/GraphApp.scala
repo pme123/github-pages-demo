@@ -14,10 +14,9 @@ import scala.scalajs.js.annotation.JSExportTopLevel
 
 object GraphApp extends IntellijImplicits {
 
-
   @JSExportTopLevel("runJSGraph")
   def main(): Unit = {
-    dom.render(document.getElementById("graphDiv"), contents)
+    dom.render(document.getElementById("graphDiv"), plotly)
   }
 
   import scala.scalajs.js.timers.setTimeout
@@ -25,22 +24,23 @@ object GraphApp extends IntellijImplicits {
   @dom
   private def plotly: Binding[HTMLElement] = {
 
-    setTimeout(1000) {
+    setTimeout(2000) {
 
-
+println("Timeout: " +document.getElementById("plotItNow"))
       val data: js.Array[Data] = js.Array(js.Dynamic.literal(
         x = js.Array(1, 2, 3, 4, 5),
         y = js.Array(1, 2, 3, 4, 5)
       ).asInstanceOf[Partial[Data]])
       val margin = js.Dynamic.literal(b = 2.5).asInstanceOf[Partial[Margin]]
       val layout: Partial[Layout] = js.Dynamic.literal(margin = margin).asInstanceOf[Partial[Layout]]
-
-      newPlot("#plotItNow",
+val elem = document.getElementById("plotDiv")
+      println(s"elem: $elem")
+      newPlot("plotDiv",
         data,
         layout
       )
     }
-    <div id="plotItNow"></div>
+    <div></div>
   }
 
   case class Point(x: Int, y: Int) {
@@ -93,8 +93,8 @@ object GraphApp extends IntellijImplicits {
 
 
 
-    //jsdom.window.setInterval(() => run(), 50)
+      //jsdom.window.setInterval(() => run(), 50)
 
-    canvas
+      canvas
   }
 }
