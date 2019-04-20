@@ -1,9 +1,11 @@
 package pages.demo
 
+import com.thoughtworks.binding.Binding.Var
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.{HTMLCanvasElement, HTMLElement}
 import org.scalajs.{dom => jsdom}
+import typings.mathjsLib.mathjsMod
 import typings.plotlyDotJsLib.plotlyDotJsMod.^._
 import typings.plotlyDotJsLib.plotlyDotJsMod.{Data, Layout, Margin}
 import typings.stdLib.Partial
@@ -14,6 +16,8 @@ import scala.scalajs.js.annotation.JSExportTopLevel
 
 object GraphApp extends IntellijImplicits {
 
+  val expressionVar = Var("x^2")
+
   @JSExportTopLevel("runJSGraph")
   def main(): Unit = {
     dom.render(document.getElementById("graphDiv"), plotly)
@@ -23,24 +27,39 @@ object GraphApp extends IntellijImplicits {
 
   @dom
   private def plotly: Binding[HTMLElement] = {
-
+    val expression = expressionVar.bind
     setTimeout(2000) {
 
-println("Timeout: " +document.getElementById("plotItNow"))
+      println("Timeout: " + document.getElementById("plotItNow"))
+
+      val expr = mathjsMod.^.compile(expression)
+      val xValues = js.Array(-20 to 20: _*)
+      val yValues = xValues.map { x =>
+        val y = expr.eval(js.Dynamic.literal(
+          x = x
+        ))
+        y
+      }
+      println("xValues: " + xValues.toSeq)
+      println("yValues: " + yValues.toSeq)
       val data: js.Array[Data] = js.Array(js.Dynamic.literal(
-        x = js.Array(1, 2, 3, 4, 5),
-        y = js.Array(1, 2, 3, 4, 5)
+        x = xValues,
+        y = yValues
       ).asInstanceOf[Partial[Data]])
-      val margin = js.Dynamic.literal(b = 2.5).asInstanceOf[Partial[Margin]]
+      val margin = js.Dynamic.literal(b = 0).asInstanceOf[Partial[Margin]]
       val layout: Partial[Layout] = js.Dynamic.literal(margin = margin).asInstanceOf[Partial[Layout]]
-val elem = document.getElementById("plotDiv")
+      val elem = document.getElementById("plotDiv")
       println(s"elem: $elem")
       newPlot("plotDiv",
         data,
         layout
       )
     }
-    <div></div>
+    <div>
+      <input type="text">
+        {expression}
+      </input>
+    </div>
   }
 
   case class Point(x: Int, y: Int) {
@@ -93,8 +112,8 @@ val elem = document.getElementById("plotDiv")
 
 
 
-      //jsdom.window.setInterval(() => run(), 50)
+    //jsdom.window.setInterval(() => run(), 50)
 
-      canvas
+    canvas
   }
 }
