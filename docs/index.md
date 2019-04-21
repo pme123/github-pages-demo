@@ -5,9 +5,6 @@
 layout: default
 ---
 
-<script src="/assets/javascripts/scala-js-tutorial-fastopt-bundle.js">
-</script>
-
 
 {% include mycomponent.html %}
 

@@ -35,10 +35,9 @@ object GraphApp extends IntellijImplicits {
       val expr = mathjsMod.^.compile(expression)
       val xValues = js.Array(-20 to 20: _*)
       val yValues = xValues.map { x =>
-        val y = expr.eval(js.Dynamic.literal(
+        expr.eval(js.Dynamic.literal(
           x = x
         ))
-        y
       }
       println("xValues: " + xValues.toSeq)
       println("yValues: " + yValues.toSeq)
