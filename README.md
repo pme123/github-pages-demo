@@ -9,3 +9,8 @@
 In sbt console:
 
     ~copyTask
+    
+ # Github Pages
+ 
+https://pme123.github.io/github-pages-demo/
+
