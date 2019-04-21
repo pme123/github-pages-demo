@@ -5,6 +5,10 @@
 layout: default
 ---
 
+{% include surface/CubeSurface.md %}
+{% include surface/CylinderSurface.md %}
+{% include volume/CubeVolume.md %}
+{% include volume/CylinderVolume.md %}
 
 {% include mycomponent.html %}
 
