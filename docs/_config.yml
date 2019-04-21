@@ -1,2 +1,3 @@
 name: pme123
 markdown: kramdown
+theme: jekyll-theme-minimal
