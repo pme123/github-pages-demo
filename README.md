@@ -2,7 +2,7 @@
 ## Run Jenkill locally
 
     cd docs
-    bundle exec jekyll serve
+    bundle exec jekyll serve --baseurl ''
     
 # Run ScalaJS compilation
 
