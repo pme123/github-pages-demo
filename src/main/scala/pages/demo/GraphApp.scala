@@ -28,6 +28,7 @@ object GraphApp extends IntellijImplicits {
   @dom
   private def plotly: Binding[HTMLElement] = {
     val expression = expressionVar.bind
+    println(s"EXPRESSION: $expression")
     setTimeout(2000) {
 
       println("Timeout: " + document.getElementById("plotItNow"))
@@ -35,30 +36,37 @@ object GraphApp extends IntellijImplicits {
       val expr = mathjsMod.^.compile(expression)
       val xValues = js.Array(-20 to 20: _*)
       val yValues = xValues.map { x =>
-        expr.eval(js.Dynamic.literal(
-          x = x
-        ))
+        expr.eval(
+          js.Dynamic.literal(
+            x = x
+          )
+        )
       }
       println("xValues: " + xValues.toSeq)
       println("yValues: " + yValues.toSeq)
-      val data: js.Array[Data] = js.Array(js.Dynamic.literal(
-        x = xValues,
-        y = yValues
-      ).asInstanceOf[Partial[Data]])
+      val data: js.Array[Data] = js.Array(
+        js.Dynamic
+          .literal(
+            x = xValues,
+            y = yValues
+          )
+          .asInstanceOf[Partial[Data]]
+      )
       val margin = js.Dynamic.literal(b = 0).asInstanceOf[Partial[Margin]]
-      val layout: Partial[Layout] = js.Dynamic.literal(margin = margin).asInstanceOf[Partial[Layout]]
+      val layout: Partial[Layout] =
+        js.Dynamic.literal(margin = margin).asInstanceOf[Partial[Layout]]
       val elem = document.getElementById("plotDiv")
       println(s"elem: $elem")
-      newPlot("plotDiv",
-        data,
-        layout
-      )
+      newPlot("plotDiv", data, layout)
     }
-    <div>
-      <input type="text">
-        {expression}
-      </input>
-    </div>
+    <form class="ui form">
+      <div class="field">
+        <label>First Name</label>
+        <input type="text" name="first-name" placeholder="First Name">
+        {expression}</input>
+      </div>
+      <button class="ui button" type="submit">Submit</button>
+    </form>
   }
 
   case class Point(x: Int, y: Int) {
@@ -70,8 +78,11 @@ object GraphApp extends IntellijImplicits {
   @dom
   private def contents: Binding[HTMLElement] = {
 
-    val canvas: HTMLCanvasElement = <canvas id="myCanvas" width={600} height={600}></canvas>.asInstanceOf[HTMLCanvasElement]
-    val ctx = canvas.getContext("2d")
+    val canvas: HTMLCanvasElement = <canvas id="myCanvas" width={600} height={
+      600
+    }></canvas>.asInstanceOf[HTMLCanvasElement]
+    val ctx = canvas
+      .getContext("2d")
       .asInstanceOf[jsdom.CanvasRenderingContext2D]
 
     ctx.fillStyle = "white"
@@ -88,7 +99,9 @@ object GraphApp extends IntellijImplicits {
       (x.toDouble, y)
     }
 
-    val pairs = run(yFormula).filter { case (x, y) => x < 650 && x > -50 && y < 650 && y > -50 }
+    val pairs = run(yFormula).filter {
+      case (x, y) => x < 650 && x > -50 && y < 650 && y > -50
+    }
     val maxX = pairs.map(_._1).max
     val minX = pairs.map(_._1).min
     val factor = 300 / Seq(Math.abs(minX), maxX).max
@@ -108,8 +121,6 @@ object GraphApp extends IntellijImplicits {
       ctx.lineTo(300 + factor * lines.last._1, 300 - lines.last._2)
       ctx.stroke()
     }
-
-
 
     //jsdom.window.setInterval(() => run(), 50)
 
