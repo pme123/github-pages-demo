@@ -4,13 +4,14 @@
 # See: https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 layout: default
 ---
+{% include scripts.html %}
+Draw the graph of your formula:
 
-{% include surface/CubeSurface.md %}
-{% include surface/CylinderSurface.md %}
-{% include volume/CubeVolume.md %}
-{% include volume/CylinderVolume.md %}
+<div id="graphDiv"></div>
+<div id="plotGraph"></div>
+<script>runJSGraph();</script>
 
-{% include mycomponent.html %}
+
 
 
     

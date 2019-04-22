@@ -26,9 +26,8 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Build settings
 markdown: kramdown
-#theme: jekyll-theme-slate
-plugins:
-  - jekyll-feed
+mathjax: true
+remote_theme: "mmistakes/so-simple-theme"
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list

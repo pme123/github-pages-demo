@@ -29,33 +29,7 @@ object GraphApp extends IntellijImplicits {
   @dom
   private def plotly: Binding[HTMLElement] = {
     val expression = expressionVar.bind
-
-    setTimeout(200) {
-      val expr = mathjsMod.^.compile(expression)
-      val xValues = js.Array(-20 to 20: _*)
-      val yValues = xValues.map { x =>
-        expr.eval(
-          js.Dynamic.literal(
-            x = x
-          )
-        )
-      }
-      val data: js.Array[Data] = js.Array(
-        js.Dynamic
-          .literal(
-            x = xValues,
-            y = yValues
-          )
-          .asInstanceOf[Partial[Data]]
-      )
-      val margin = js.Dynamic.literal(b = 0).asInstanceOf[Partial[Margin]]
-      val layout: Partial[Layout] =
-        js.Dynamic
-          .literal(showlegend = false)
-          .asInstanceOf[Partial[Layout]]
-      val elem = document.getElementById("plotDiv")
-      newPlot("plotDiv", data, layout)
-    }
+    Graph.plotly(expression, "plotGraph")
     <form class="ui form">
       <div class="field">
         <label>Formula</label>
