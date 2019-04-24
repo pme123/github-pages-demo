@@ -5,3 +5,7 @@
 .metals
 .vscode
 target
+
+_site
+.sass-cache
+.jekyll-metadata

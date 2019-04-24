@@ -13,21 +13,47 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-title: My Github Pages Demo
-email: your-email@example.com
-description: >- # this means to ignore newlines until "baseurl:"
-  Experiments with Github Pages.
-main_content: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
-baseurl: "/github-pages-demo" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+
+# theme: jekyll-theme-so-simple
+remote_theme: mmistakes/so-simple-theme
+
+locale: en-US
+title: "Simple Math Tutorials"
+description: "A simple way to create Math Tutorials."
+baseurl: "/github-pages-demo"
+url: "https://pme123.github.io/github-pages-demo"
+logo: "/assets/images/logo.png"
+date_format: "%B %-d, %Y"
+read_time: true
+words_per_minute: # 200
+mathjax: true
+google_fonts:
+  - name: "Source Sans Pro"
+    weights: "400,400i,700,700i"
+  - name: "Lora"
+    weights: "400,400i,700,700i"
+disqus:
+  shortname: "sosimpletheme"
+
+# Liquid
+liquid:
+  error_mode: strict
 
 # Build settings
 markdown: kramdown
-mathjax: true
-remote_theme: "mmistakes/so-simple-theme"
+feed:
+  path: atom.xml
+
+# Pagination - https://jekyllrb.com/docs/pagination/
+paginate: 10
+paginate_path: /page:num/
+
+# Search
+search_full_content: false
+
+# Taxonomy pages
+category_archive_path: "/categories/#"
+tag_archive_path: "/tags/#"
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
@@ -40,3 +66,39 @@ remote_theme: "mmistakes/so-simple-theme"
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-paginate
+  - jekyll-redirect-from
+
+# Front Matter Defaults
+defaults:
+  # Post defaults
+  - scope:
+      path: "_posts"
+      type: posts
+    values:
+      layout: post
+      comments: true
+      share: true
+
+# Site Author
+author:
+  name: pme123
+  email:
+  links:
+    - title: GitHub
+      url: https://github.com/pme123/github-pages-demo
+      icon: fab fa-github-square
+
+# Footer Links
+footer_links:
+  - title: GitHub
+    url: https://github.com/pme123/github-pages-demo
+    icon: fab fa-github-square
+  - title: Feed
+    url: atom.xml
+    icon: fas fa-rss-square

@@ -17,7 +17,7 @@ import scala.scalajs.js.annotation.JSExportTopLevel
 
 object GraphApp extends IntellijImplicits {
 
-  val expressionVar = Var("x^2")
+  val expressionVar:Var[String] = Var("x^2")
 
   @JSExportTopLevel("runJSGraph")
   def main(): Unit = {
@@ -25,12 +25,13 @@ object GraphApp extends IntellijImplicits {
   }
 
   import scala.scalajs.js.timers.setTimeout
-
+private def update(newValue:String) = (expressionVar.value = newValue)
   @dom
-  private def plotly: Binding[HTMLElement] = {
+  private lazy val plotly: Binding[HTMLElement] = {
     val expression = expressionVar.bind
+    println(s"expression: $expression")
     Graph.plotly(expression, "plotGraph")
-    <form class="ui form">
+    <div class="ui form">
       <div class="field">
         <label>Formula</label>
         <input type="text" name="formula" id="formula" placeholder="Formula" value={
@@ -38,8 +39,14 @@ object GraphApp extends IntellijImplicits {
     }/>
       </div>
       <button class="ui button" 
-      onclick={_: Event => expressionVar.value = formula.value}>Submit</button>
-    </form>
+      onclick={
+      _: Event =>
+        println("expressionVal: " + formula.value)
+        update(formula.value)
+    }>Submit</button>
+    </div>
   }
+
+
 
 }
