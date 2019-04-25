@@ -8,8 +8,8 @@ resolvers += Resolver.bintrayRepo("oyvindberg", "ScalablyTyped")
 enablePlugins(ScalaJSPlugin)
 enablePlugins(ScalaJSBundlerPlugin)
 
-name := "Scala.js Tutorial"
-scalaVersion := "2.12.6" // or any other Scala version >= 2.10.2
+name := "Simple Tutorials"
+scalaVersion := "2.12.7" // or any other Scala version >= 2.10.2
 
 webpackBundlingMode := BundlingMode.LibraryAndApplication()
 

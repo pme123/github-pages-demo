@@ -32,8 +32,6 @@ google_fonts:
     weights: "400,400i,700,700i"
   - name: "Lora"
     weights: "400,400i,700,700i"
-disqus:
-  shortname: "sosimpletheme"
 
 # Liquid
 liquid:
