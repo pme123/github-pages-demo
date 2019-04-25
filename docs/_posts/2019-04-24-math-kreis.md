@@ -9,10 +9,11 @@ tags:
 ---
 # Formeln
 
-| Radius       | \\(r\\) |
-| Durchmesser  | \\(2*r\\) |
-| Umfang       | \\(2*\\pi *r\\) |
-| Fläche       | \\(\\pi *r^2\\) |
+| Radius       | r | \\(r\\) |
+| Durchmesser  | d | \\(2*r\\) |
+| Umfang       | U | \\(2*\\pi *r\\) |
+| Fläche       | A | \\(\\pi *r^2\\) |
+| Mittelpunkt  | M | \\((offsetX + r; offsetY + r)\\) |
 
 <div id="circleDiv"></div>
 <div id="plotCircle"></div>

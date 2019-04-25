@@ -8,8 +8,6 @@ tags:
 
 ---
 
-Draw the graph of your formula:
-
 <div id="graphDiv"></div>
 <div id="plotGraph"></div>
 <script>runJSGraph();</script>

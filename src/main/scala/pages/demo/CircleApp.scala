@@ -19,34 +19,36 @@ import scala.scalajs.js.timers.setTimeout
 
 object CircleApp extends IntellijImplicits {
 
-  val radiusVar = Var("5")
+  val radiusVar = Var("3")
 
   @JSExportTopLevel("runJSCircle")
   def main(): Unit = {
     dom.render(document.getElementById("circleDiv"), plotly)
   }
 
-
   @dom
   private lazy val plotly: Binding[HTMLElement] = {
     val radiusVal = radiusVar.bind
     println(s"new radius: $radiusVal")
-    val xValues = js.Array()
-    val yValues = js.Array()
+    val upper = 1 + 2 * radiusVal.toInt
+    val xValues = js.Array(1 + upper / 2, upper / 2, 1 + upper / 2, upper - 1)
+    val yValues = js.Array(0.5, upper / 2, 0.5 + upper / 2, 0.5 + upper / 2)
     val data: js.Array[Data] = js.Array(
       dynLit(
         x = xValues,
-        y = yValues
+        y = yValues,
+        text = js.Array("U", "A", "M", "r"),
+        mode = "text"
       ).asInstanceOf[Partial[Data]]
     )
     val layout: Partial[Layout] =
       dynLit(
         xaxis = dynLit(
-          range = js.Array(0, 4.5),
+          range = js.Array(0, upper + 1),
           zeroline = false
         ),
         yaxis = dynLit(
-          range = js.Array(0, 4.5),
+          range = js.Array(0, upper + 1),
           zeroline = false
         ),
         width = 500,
@@ -56,12 +58,35 @@ object CircleApp extends IntellijImplicits {
             `type` = "circle",
             xref = "x",
             yref = "y",
-            x0 = 0,
-            y0 = 0,
-            x1 = radiusVal,
-            y1 = radiusVal,
+            x0 = 1,
+            y0 = 1,
+            x1 = upper,
+            y1 = upper,
             line = dynLit(
               color = "rgba(50, 171, 96, 1)"
+            )
+          ),
+          dynLit(
+            `type` = "circle",
+            xref = "x",
+            yref = "y",
+            x0 = 1.0 + radiusVal.toInt - 0.05,
+            y0 = 1.0 + radiusVal.toInt - 0.05,
+            x1 = 1.0 + radiusVal.toInt + 0.05,
+            y1 = 1.0 + radiusVal.toInt + 0.05,
+            line = dynLit(
+              color = "rgba(171, 171, 96, 1)"
+            )
+          ),
+          dynLit(
+            `type` = "line",
+            x0 = 1.0 + radiusVal.toInt,
+            y0 = 1.0 + radiusVal.toInt,
+            x1 = upper,
+            y1 = 1.0 + radiusVal.toInt,
+            line = dynLit(
+              color = "rgb(128, 0, 128, 0.5)",
+              width = 2
             )
           )
         )
@@ -81,9 +106,11 @@ object CircleApp extends IntellijImplicits {
     }/>
       </div>
       <button class="ui button" 
-      onclick={_: Event => 
-        println("radius.value: " +radius.value)
-        radiusVar.value = radius.value}>Submit</button>
+      onclick={
+      _: Event =>
+        println("radius.value: " + radius.value)
+        radiusVar.value = radius.value
+    }>Submit</button>
 </div>
   }
 
