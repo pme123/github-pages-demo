@@ -16,6 +16,7 @@ webpackBundlingMode := BundlingMode.LibraryAndApplication()
 libraryDependencies ++= Seq(
   ScalablyTyped.P.`plotly_dot_js`,
   ScalablyTyped.M.`mathjs`,
+  //ScalablyTyped.M.`mathjax`
   //  ScalablyTyped.J.`jquery`,
   //  ScalablyTyped.S.`semantic-ui`,
 )
@@ -23,6 +24,7 @@ libraryDependencies ++= Seq(
 npmDependencies in Compile ++= Seq(
   "plotly.js" -> "1.47.2",
   "mathjs" -> "5.0",
+  //"mathjax" -> "2.7.2",
   //  "jquery" -> "1.0.4",
   //  "semantic-ui" -> "2.2",
 )

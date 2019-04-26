@@ -1,19 +1,12 @@
 package pages.demo
 
-import com.thoughtworks.binding.Binding.Var
-import com.thoughtworks.binding.{Binding, dom}
-import org.scalajs.dom.document
-import org.scalajs.dom.raw.{HTMLCanvasElement, HTMLElement}
-import org.scalajs.{dom => jsdom}
-import scala.scalajs.js.Dynamic.{literal => dynLit}
 import typings.mathjsLib.mathjsMod.{^ => mathjs}
-import typings.plotlyDotJsLib.plotlyDotJsMod.{^ => plotlyjs}
-import typings.plotlyDotJsLib.plotlyDotJsMod.{Data, Layout, Margin}
+import typings.plotlyDotJsLib.plotlyDotJsMod.{Data, Layout, ^ => plotlyjs}
 import typings.stdLib.Partial
-import org.scalajs.dom.raw.{Event, FileReader, HTMLElement, HTMLInputElement}
+import scala.scalajs.js.Dynamic.{global => g}
 
-import scala.collection.immutable
 import scala.scalajs.js
+import scala.scalajs.js.Dynamic.{literal => dynLit}
 import scala.scalajs.js.annotation.JSExportTopLevel
 
 object Graph extends IntellijImplicits {
@@ -56,5 +49,8 @@ object Graph extends IntellijImplicits {
     setTimeout(200) {
       println("printDiv")
       plotlyjs.newPlot(plotDiv, data, layout)
+      if (!js.isUndefined(g.MathJax)) {
+        g.MathJax.Hub.Queue(js.Array("Typeset", g.MathJax.Hub))
+      }
     }
 }
