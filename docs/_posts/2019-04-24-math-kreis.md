@@ -7,13 +7,6 @@ tags:
   - math
   - kreis
 ---
-# Formeln
-
-| Radius       | r | \\(r\\) |
-| Durchmesser  | d | \\(2*r\\) |
-| Umfang       | U | \\(2*\\pi *r\\) |
-| Fläche       | A | \\(\\pi *r^2\\) |
-| Mittelpunkt  | M | \\((offsetX + r; offsetY + r)\\) |
 
 <div id="circleDiv"></div>
 <div id="plotCircle"></div>

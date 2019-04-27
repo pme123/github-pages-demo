@@ -4,6 +4,7 @@ import typings.mathjsLib.mathjsMod.{^ => mathjs}
 import typings.plotlyDotJsLib.plotlyDotJsMod.{Data, Layout, ^ => plotlyjs}
 import typings.stdLib.Partial
 import scala.scalajs.js.Dynamic.{global => g}
+import typings.mathjaxLib.MathJaxNs.{^ => MathJax}
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => dynLit}
@@ -47,10 +48,9 @@ object Graph extends IntellijImplicits {
 
   def plot(plotDiv: String, data: js.Array[Data], layout: Partial[Layout]) =
     setTimeout(200) {
-      println("printDiv")
       plotlyjs.newPlot(plotDiv, data, layout)
-      if (!js.isUndefined(g.MathJax)) {
-        g.MathJax.Hub.Queue(js.Array("Typeset", g.MathJax.Hub))
+      if (!js.isUndefined(MathJax)) {
+        MathJax.Hub.Queue(js.Array("Typeset", MathJax.Hub))
       }
     }
 }
