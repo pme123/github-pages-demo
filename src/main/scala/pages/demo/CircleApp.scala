@@ -17,9 +17,11 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExportTopLevel
 import scala.scalajs.js.timers.setTimeout
 
-object CircleApp extends IntellijImplicits {
+object CircleApp extends IntellijImplicits with UIHelper {
 
   val radiusVar: Var[Double] = Var(3.0)
+  val offsetVar: Var[Double] = Var(0.5)
+  val diagramWidth = 800
 
   @JSExportTopLevel("runJSCircle")
   def main(): Unit = {
@@ -30,24 +32,27 @@ object CircleApp extends IntellijImplicits {
   private lazy val plotly: Binding[HTMLElement] = {
     val r = radiusVar.bind
     println(s"new radius: $r")
-    val offsetV = r / 6
-    val upper = offsetV + 2 * r.toInt
-    val xValues = js.Array(
-      offsetV + upper / 2,
-      upper / 2,
-      offsetV + upper / 2,
-      upper - offsetV
-    )
-    val yValues = js.Array(
-      offsetV / 2,
-      upper / 2,
-      offsetV + upper / 2,
-      offsetV + upper / 2
-    )
+    val offset = offsetVar.bind
+    println(s"new offsetV: $offset")
+
+    val offsetM = offset + r
+
+    val upper = offset + 2 * r.toInt
+    val textOffset =  0.03 * r
     val data: js.Array[Data] = js.Array(
       dynLit(
-        x = xValues,
-        y = yValues,
+        x = js.Array(
+          offsetM + r + textOffset,
+          offsetM - r / 2,
+          offsetM + textOffset,
+          offsetM + r / 2
+        ),
+        y = js.Array(
+          offsetM + textOffset,
+          offsetM - r / 2,
+          offsetM + textOffset,
+          offsetM + textOffset
+        ),
         text = js.Array("U", "A", "M", "r"),
         mode = "text"
       ).asInstanceOf[Partial[Data]]
@@ -55,22 +60,21 @@ object CircleApp extends IntellijImplicits {
     val layout: Partial[Layout] =
       dynLit(
         xaxis = dynLit(
-          range = js.Array(0, upper + offsetV),
-          zeroline = false
+          range = js.Array(0 - Math.abs(offset), upper + Math.abs(offset)),
         ),
         yaxis = dynLit(
-          range = js.Array(0, upper + offsetV),
-          zeroline = false
+          range = js.Array(0 - Math.abs(offset), upper + Math.abs(offset)),
+          zeroline = true
         ),
-        width = 500,
-        height = 500,
+        width = diagramWidth,
+        height = diagramWidth,
         shapes = js.Array(
           dynLit(
             `type` = "circle",
             xref = "x",
             yref = "y",
-            x0 = offsetV,
-            y0 = offsetV,
+            x0 = offset,
+            y0 = offset,
             x1 = upper,
             y1 = upper,
             line = dynLit(
@@ -81,20 +85,20 @@ object CircleApp extends IntellijImplicits {
             `type` = "circle",
             xref = "x",
             yref = "y",
-            x0 = offsetV + r.toInt - 0.05,
-            y0 = offsetV + r.toInt - 0.05,
-            x1 = offsetV + r.toInt + 0.05,
-            y1 = offsetV + r.toInt + 0.05,
+            x0 = offset + r - 0.01 * r,
+            y0 = offset + r - 0.01 * r,
+            x1 = offset + r + 0.01 * r,
+            y1 = offset + r + 0.01 * r,
             line = dynLit(
               color = "rgba(171, 171, 96, 1)"
             )
           ),
           dynLit(
             `type` = "line",
-            x0 = offsetV + r.toInt,
-            y0 = offsetV + r.toInt,
+            x0 = offset + r.toInt,
+            y0 = offset + r.toInt,
             x1 = upper,
-            y1 = offsetV + r.toInt,
+            y1 = offset + r.toInt,
             line = dynLit(
               color = "rgb(128, 0, 128, 0.5)",
               width = 2
@@ -110,12 +114,11 @@ object CircleApp extends IntellijImplicits {
     )
     val d = (2 * r)
     val circumference = d * Math.PI
-    val area = Math.sqrt(r) * Math.PI
+    val area = r * r * Math.PI
     val units = s"\\(mm \\ cm \\ dm \\ m\\)"
     val units2 = s"\\(mm^2 \\ cm^2 \\ dm^2 \\ m^2\\)"
-    val offset = offsetV + r
     <div class="ui form">
-    <h1>Formulas</h1>
+      <h1>Formulas</h1>
       <table>
         <tbody>
           <tr>
@@ -125,12 +128,10 @@ object CircleApp extends IntellijImplicits {
               {s"\\(r\\)"}
             </td>
             <td>
-              {units}
+              <input class="right" type="text" name="radiusIn" id="radiusIn" placeholder="Radius" value={s"$r"} onblur={_: Event => radiusVar.value = radiusIn.value.toDouble}/>
             </td>
             <td>
-            <input class="right" type="text" name="radius" id="radius" placeholder="Radius" value={
-      s"$r"
-    }/>
+              {units}
             </td>
           </tr>
           <tr>
@@ -140,66 +141,49 @@ object CircleApp extends IntellijImplicits {
               {s"\\(2*r\\)"}
             </td>
             <td>
-              {units}
-            </td>
-            <td>
-            <input type="text" name="diameter" id="diameter" placeholder="Diameter" value={
-              s"$d"
-            }/>
-            </td>
+              <input class="right" type="text" id="diameterIn" placeholder="Diameter" value={s"$d"} onblur={_: Event => radiusVar.value = diameterIn.value.toDouble / 2}/>
+            </td> <td>
+            {units}
+          </td>
           </tr>
           <tr>
             <td>Umfang</td>
             <td>U</td>
             <td>
-            {s"\\(2*\\pi *r\\)"}
-          </td>
-          <td>
+              {s"\\(2*\\pi *r\\)"}
+            </td>
+            <td>
+              <input class="right" type="text" name="circumferenceIn" id="circumferenceIn" placeholder="Circumference" value={s"$circumference"} onblur={_: Event => radiusVar.value = circumferenceIn.value.toDouble / 2 / Math.PI}/>
+            </td> <td>
             {units}
-          </td>
-          <td>
-            {s"$circumference"}
           </td>
           </tr>
           <tr>
             <td>Fläche</td>
             <td>A</td>
             <td>
-            {s"\\(\\pi*r^2\\)"}
-          </td>
-          <td>
+              {s"\\(\\pi*r^2\\)"}
+            </td>
+            <td>
+              <input class="right" type="text" name="areaIn" id="areaIn" placeholder="Area" value={s"$area"} onblur={_: Event => radiusVar.value = Math.sqrt(areaIn.value.toDouble / Math.PI)}/>
+            </td> <td>
             {units2}
-          </td>
-          <td>
-            {s"$area"}
           </td>
           </tr>
           <tr>
             <td>Mittelpunkt</td>
             <td>M</td>
             <td>
-            {s"\\((offsetX + r; offsetY + r)\\)"}
-          </td>
-          <td>
+              {s"\\((offsetX + r; offsetY + r)\\)"}
+            </td>
+            <td>
+              <input class="right" type="text" name="offsetIn" id="offsetIn" placeholder="Offset" value={s"$offsetM"} onblur={_: Event => offsetVar.value = offsetIn.value.toDouble - r}/>
+            </td> <td>
             {units}
-          </td>
-          <td>
-            {s"($offset; $offset)"}
           </td>
           </tr>
         </tbody>
       </table>
-
-      <div class="field">
-        <label>Radius</label>
-
-      </div>
-      <button class="ui button"
-              onclick={
-      _: Event =>
-        println("radius.value: " + radius.value)
-        radiusVar.value = radius.value.toDouble
-    }>Submit</button>
     </div>
   }
 
