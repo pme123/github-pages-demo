@@ -2,3 +2,46 @@
   text-align: right; 
 }
 
+/*
+   start anchorjs
+*/
+/*
+ * Header link placement and hover behavior
+ */
+
+ .header-link {
+  position: absolute;
+  padding-right: .9em;
+  margin-left: -1em;
+  color: inherit !important;
+  text-decoration: none !important;
+  opacity: 0;
+}
+
+.header-link .fa {
+  font-size: 44%;
+  vertical-align: .1em;
+}
+
+/* do not display in less than 768px screen */
+@media (max-width: 767px) {
+  .header-link {
+    display: none !important;
+  }
+}
+
+*:hover > .header-link {
+  opacity: .75;
+  /* to fade links as they appear, change transition-property from 'color' to 'all' */
+  -webkit-transition: color .16s linear;
+  transition: color .16s linear;
+}
+
+*:hover > .header-link:hover,
+*:hover > .header-link:focus {
+  opacity: 0.75;
+}
+/* 
+ end anchorjs
+*/
+

@@ -39,6 +39,9 @@ liquid:
 
 # Build settings
 markdown: kramdown
+kramdown:
+  auto_ids: true
+
 feed:
   path: atom.xml
 

@@ -1,9 +1,8 @@
 package pages.demo
 
-import typings.mathjsLib.mathjsMod.{^ => mathjs}
-import typings.plotlyDotJsLib.plotlyDotJsMod.{Data, Layout, ^ => plotlyjs}
+import typings.mathjsLib.mathjsMod.{^ => Mathjs}
+import typings.plotlyDotJsLib.plotlyDotJsMod.{Data, Layout, ^ => Plotlyjs}
 import typings.stdLib.Partial
-import scala.scalajs.js.Dynamic.{global => g}
 import typings.mathjaxLib.MathJaxNs.{^ => MathJax}
 
 import scala.scalajs.js
@@ -21,7 +20,7 @@ object Graph extends IntellijImplicits {
       rangeFrom: Int = -20, // the range of the x-axe - minimum
       rangeTo: Int = 20 // the range of the x-axe - maximum
   ) = {
-    val expr = mathjs.compile(exprStr)
+    val expr = Mathjs.compile(exprStr)
     val xValues = js.Array((rangeFrom to rangeTo): _*)
     val yValues = xValues.map { x =>
       expr.eval(
@@ -48,7 +47,7 @@ object Graph extends IntellijImplicits {
 
   def plot(plotDiv: String, data: js.Array[Data], layout: Partial[Layout]) =
     setTimeout(200) {
-      plotlyjs.newPlot(plotDiv, data, layout)
+      Plotlyjs.newPlot(plotDiv, data, layout)
       if (!js.isUndefined(MathJax)) {
         MathJax.Hub.Queue(js.Array("Typeset", MathJax.Hub))
       }
