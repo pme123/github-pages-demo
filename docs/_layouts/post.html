@@ -9,9 +9,10 @@ layout: default
       <header class="page-header">
         {% assign title = page.title | markdownify | strip_html %}
         {% if page.link %}
-          <h1 id="page-title" class="page-title p-name"><a href="{{ page.link }}">{{ title }} <span class="link-arrow">&rarr;</span></a></h1>
+        <h1 id="page-title" class="page-title p-name"><a href="{{ page.link }}">{{ title }} <span
+              class="link-arrow">&rarr;</span></a></h1>
         {% else %}
-          <h1 id="page-title" class="page-title p-name">{{ title }}</h1>
+        <h1 id="page-title" class="page-title p-name">{{ title }}</h1>
         {% endif %}
       </header>
 
@@ -23,17 +24,17 @@ layout: default
 
       <div class="page-content">
         <div class="e-content">
-            {{ page.excerpt }}
-            {% include custom-scripts.html %}
+          {{ page.excerpt }}  
+          {% include custom-scripts.html %}
           {{ content }}
         </div>
 
         {% if page.share %}
-          {% include social-share.html %}
+        {% include social-share.html %}
         {% endif %}
 
         {% if site.disqus.shortname %}
-          {% include disqus-comments.html %}
+        {% include disqus-comments.html %}
         {% endif %}
 
         {% include page-pagination.html %}

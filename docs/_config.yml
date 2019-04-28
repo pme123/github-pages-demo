@@ -47,7 +47,7 @@ paginate: 10
 paginate_path: /page:num/
 
 # Search
-search_full_content: false
+search_full_content: true
 
 # Taxonomy pages
 category_archive_path: "/categories/#"

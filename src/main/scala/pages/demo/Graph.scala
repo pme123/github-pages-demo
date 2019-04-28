@@ -16,10 +16,10 @@ object Graph extends IntellijImplicits {
 
   @JSExportTopLevel("plotGraph")
   def plotly(
-      exprStr: String,
-      plotDiv: String,
-      rangeFrom: Int = -20,
-      rangeTo: Int = 20
+      exprStr: String, // the formula you want to draw a Graph for (in form of `x*2` - it mus contain a `x`)
+      plotDiv: String, // the name of the `<div>` where you want to create the Graph.
+      rangeFrom: Int = -20, // the range of the x-axe - minimum
+      rangeTo: Int = 20 // the range of the x-axe - maximum
   ) = {
     val expr = mathjs.compile(exprStr)
     val xValues = js.Array((rangeFrom to rangeTo): _*)

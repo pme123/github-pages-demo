@@ -20,8 +20,8 @@ import scala.scalajs.js.timers.setTimeout
 object CircleApp extends IntellijImplicits with UIHelper {
 
   val radiusVar: Var[Double] = Var(3.0)
-  val offsetVar: Var[Double] = Var(0.5)
-  val diagramWidth = 800
+  val offsetMVar: Var[Double] = Var(0)
+  val diagramWidth = 500
 
   @JSExportTopLevel("runJSCircle")
   def main(): Unit = {
@@ -32,13 +32,11 @@ object CircleApp extends IntellijImplicits with UIHelper {
   private lazy val plotly: Binding[HTMLElement] = {
     val r = radiusVar.bind
     println(s"new radius: $r")
-    val offset = offsetVar.bind
-    println(s"new offsetV: $offset")
+    val offsetM = offsetMVar.bind
+    println(s"new offsetM: $offsetM")
 
-    val offsetM = offset + r
-
-    val upper = offset + 2 * r.toInt
-    val textOffset =  0.03 * r
+    val upper = offsetM + r
+    val textOffset = 0.03 * r
     val data: js.Array[Data] = js.Array(
       dynLit(
         x = js.Array(
@@ -60,10 +58,9 @@ object CircleApp extends IntellijImplicits with UIHelper {
     val layout: Partial[Layout] =
       dynLit(
         xaxis = dynLit(
-          range = js.Array(0 - Math.abs(offset), upper + Math.abs(offset)),
+          zeroline = true
         ),
         yaxis = dynLit(
-          range = js.Array(0 - Math.abs(offset), upper + Math.abs(offset)),
           zeroline = true
         ),
         width = diagramWidth,
@@ -73,8 +70,8 @@ object CircleApp extends IntellijImplicits with UIHelper {
             `type` = "circle",
             xref = "x",
             yref = "y",
-            x0 = offset,
-            y0 = offset,
+            x0 = offsetM - r,
+            y0 = offsetM - r,
             x1 = upper,
             y1 = upper,
             line = dynLit(
@@ -85,20 +82,20 @@ object CircleApp extends IntellijImplicits with UIHelper {
             `type` = "circle",
             xref = "x",
             yref = "y",
-            x0 = offset + r - 0.01 * r,
-            y0 = offset + r - 0.01 * r,
-            x1 = offset + r + 0.01 * r,
-            y1 = offset + r + 0.01 * r,
+            x0 = offsetM - 0.01 * r,
+            y0 = offsetM - 0.01 * r,
+            x1 = offsetM + 0.01 * r,
+            y1 = offsetM + 0.01 * r,
             line = dynLit(
               color = "rgba(171, 171, 96, 1)"
             )
           ),
           dynLit(
             `type` = "line",
-            x0 = offset + r.toInt,
-            y0 = offset + r.toInt,
+            x0 = offsetM,
+            y0 = offsetM,
             x1 = upper,
-            y1 = offset + r.toInt,
+            y1 = offsetM,
             line = dynLit(
               color = "rgb(128, 0, 128, 0.5)",
               width = 2
@@ -115,10 +112,9 @@ object CircleApp extends IntellijImplicits with UIHelper {
     val d = (2 * r)
     val circumference = d * Math.PI
     val area = r * r * Math.PI
-    val units = s"\\(mm \\ cm \\ dm \\ m\\)"
-    val units2 = s"\\(mm^2 \\ cm^2 \\ dm^2 \\ m^2\\)"
+    val units = s"\\(m\\)"
+    val units2 = s"\\(m^2\\)"
     <div class="ui form">
-      <h1>Formulas</h1>
       <table>
         <tbody>
           <tr>
@@ -128,7 +124,9 @@ object CircleApp extends IntellijImplicits with UIHelper {
               {s"\\(r\\)"}
             </td>
             <td>
-              <input class="right" type="text" name="radiusIn" id="radiusIn" placeholder="Radius" value={s"$r"} onblur={_: Event => radiusVar.value = radiusIn.value.toDouble}/>
+              <input class="right" type="text" name="radiusIn" id="radiusIn" placeholder="Radius" value={
+      s"$r"
+    } onblur={_: Event => radiusVar.value = radiusIn.value.toDouble}/>
             </td>
             <td>
               {units}
@@ -141,7 +139,9 @@ object CircleApp extends IntellijImplicits with UIHelper {
               {s"\\(2*r\\)"}
             </td>
             <td>
-              <input class="right" type="text" id="diameterIn" placeholder="Diameter" value={s"$d"} onblur={_: Event => radiusVar.value = diameterIn.value.toDouble / 2}/>
+              <input class="right" type="text" id="diameterIn" placeholder="Diameter" value={
+      s"$d"
+    } onblur={_: Event => radiusVar.value = diameterIn.value.toDouble / 2}/>
             </td> <td>
             {units}
           </td>
@@ -153,9 +153,16 @@ object CircleApp extends IntellijImplicits with UIHelper {
               {s"\\(2*\\pi *r\\)"}
             </td>
             <td>
-              <input class="right" type="text" name="circumferenceIn" id="circumferenceIn" placeholder="Circumference" value={s"$circumference"} onblur={_: Event => radiusVar.value = circumferenceIn.value.toDouble / 2 / Math.PI}/>
+              <input class="right" type="text" name="circumferenceIn" id="circumferenceIn" placeholder="Circumference" value={
+      s"$circumference"
+    } onblur={
+      _: Event => radiusVar.value = circumferenceIn.value.toDouble / 2 / Math.PI
+    }/>
             </td> <td>
             {units}
+          </td>
+          <td>
+          {s"\\(r = \\sqrt{A/\\pi}\\)"}
           </td>
           </tr>
           <tr>
@@ -165,9 +172,16 @@ object CircleApp extends IntellijImplicits with UIHelper {
               {s"\\(\\pi*r^2\\)"}
             </td>
             <td>
-              <input class="right" type="text" name="areaIn" id="areaIn" placeholder="Area" value={s"$area"} onblur={_: Event => radiusVar.value = Math.sqrt(areaIn.value.toDouble / Math.PI)}/>
+              <input class="right" type="text" name="areaIn" id="areaIn" placeholder="Area" value={
+      s"$area"
+    } onblur={
+      _: Event => radiusVar.value = Math.sqrt(areaIn.value.toDouble / Math.PI)
+    }/>
             </td> <td>
             {units2}
+          </td>
+          <td>
+          {s"\\(r = \\sqrt{A/\\pi}\\)"}
           </td>
           </tr>
           <tr>
@@ -177,7 +191,9 @@ object CircleApp extends IntellijImplicits with UIHelper {
               {s"\\((offsetX + r; offsetY + r)\\)"}
             </td>
             <td>
-              <input class="right" type="text" name="offsetIn" id="offsetIn" placeholder="Offset" value={s"$offsetM"} onblur={_: Event => offsetVar.value = offsetIn.value.toDouble - r}/>
+              <input class="right" type="text" name="offsetIn" id="offsetIn" placeholder="Offset" value={
+      s"$offsetM"
+    } onblur={_: Event => offsetMVar.value = offsetIn.value.toDouble}/>
             </td> <td>
             {units}
           </td>
