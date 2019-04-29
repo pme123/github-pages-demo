@@ -15,7 +15,6 @@ import scala.scalajs.js.Dynamic.{literal => dynLit}
 import scala.collection.immutable
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExportTopLevel
-import scala.scalajs.js.timers.setTimeout
 
 object CircleApp extends IntellijImplicits with UIHelper {
 
