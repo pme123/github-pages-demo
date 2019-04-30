@@ -1,11 +1,11 @@
 ---
 title: "Formel Graph"
-excerpt: "Zeichne deine Formel in einem 2-dimensionalen Graph."
+excerpt: "Paint your mathematical expression in a 2-dimensional Graph."
 categories:
   - Math
 tags:
   - math
-  - deutsch
+  - english
 
 ---
 
