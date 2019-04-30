@@ -14,7 +14,7 @@ object Graph extends IntellijImplicits {
   import scala.scalajs.js.timers.setTimeout
 
   @JSExportTopLevel("plotGraph")
-  def plotly(
+  def plotGraph(
       exprStr: String, // the formula you want to draw a Graph for (in form of `x*2` - it mus contain a `x`)
       plotDiv: String, // the name of the `<div>` where you want to create the Graph.
       rangeFrom: Int = -20, // the range of the x-axe - minimum

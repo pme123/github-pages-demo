@@ -16,98 +16,25 @@ import scala.collection.immutable
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExportTopLevel
 
-object CircleApp extends IntellijImplicits with UIHelper {
+object CircleApp extends IntellijImplicits {
 
   val radiusVar: Var[Double] = Var(3.0)
   val offsetMVar: Var[Double] = Var(0)
   val diagramWidth = 500
 
   @JSExportTopLevel("runJSCircle")
-  def main(): Unit = {
-    dom.render(document.getElementById("circleDiv"), plotly)
+  def runJSCircle(): Unit = {
+    dom.render(document.getElementById("circleDiv"), printForm)
   }
 
   @dom
-  private lazy val plotly: Binding[HTMLElement] = {
+  private lazy val printForm: Binding[HTMLElement] = {
     val r = radiusVar.bind
     println(s"new radius: $r")
     val offsetM = offsetMVar.bind
     println(s"new offsetM: $offsetM")
+    printGraph(r, offsetM)
 
-    val upper = offsetM + r
-    val textOffset = 0.03 * r
-    val data: js.Array[Data] = js.Array(
-      dynLit(
-        x = js.Array(
-          offsetM + r + textOffset,
-          offsetM - r / 2,
-          offsetM + textOffset,
-          offsetM + r / 2
-        ),
-        y = js.Array(
-          offsetM + textOffset,
-          offsetM - r / 2,
-          offsetM + textOffset,
-          offsetM + textOffset
-        ),
-        text = js.Array("U", "A", "M", "r"),
-        mode = "text"
-      ).asInstanceOf[Partial[Data]]
-    )
-    val layout: Partial[Layout] =
-      dynLit(
-        xaxis = dynLit(
-          zeroline = true
-        ),
-        yaxis = dynLit(
-          zeroline = true
-        ),
-        width = diagramWidth,
-        height = diagramWidth,
-        shapes = js.Array(
-          dynLit(
-            `type` = "circle",
-            xref = "x",
-            yref = "y",
-            x0 = offsetM - r,
-            y0 = offsetM - r,
-            x1 = upper,
-            y1 = upper,
-            line = dynLit(
-              color = "rgba(50, 171, 96, 1)"
-            )
-          ),
-          dynLit(
-            `type` = "circle",
-            xref = "x",
-            yref = "y",
-            x0 = offsetM - 0.01 * r,
-            y0 = offsetM - 0.01 * r,
-            x1 = offsetM + 0.01 * r,
-            y1 = offsetM + 0.01 * r,
-            line = dynLit(
-              color = "rgba(171, 171, 96, 1)"
-            )
-          ),
-          dynLit(
-            `type` = "line",
-            x0 = offsetM,
-            y0 = offsetM,
-            x1 = upper,
-            y1 = offsetM,
-            line = dynLit(
-              color = "rgb(128, 0, 128, 0.5)",
-              width = 2
-            )
-          )
-        )
-      ).asInstanceOf[Partial[Layout]]
-
-    Graph.plot(
-      "plotCircle",
-      data,
-      layout
-    )
     val d = (2 * r)
     val circumference = d * Math.PI
     val area = r * r * Math.PI
@@ -161,7 +88,7 @@ object CircleApp extends IntellijImplicits with UIHelper {
             {units}
           </td>
           <td>
-          {s"\\(r = \\sqrt{A/\\pi}\\)"}
+          {s"\\(r = \\frac{U}{2 * \\pi} \\)"}
           </td>
           </tr>
           <tr>
@@ -200,6 +127,83 @@ object CircleApp extends IntellijImplicits with UIHelper {
         </tbody>
       </table>
     </div>
+  }
+
+  private def printGraph(radius: Double, offsetM: Double) = {
+    val upper = offsetM + radius
+    val textOffset = 0.03 * radius
+    val data: js.Array[Data] = js.Array(
+      dynLit(
+        x = js.Array(
+          offsetM + radius + textOffset,
+          offsetM - radius / 2,
+          offsetM + textOffset,
+          offsetM + radius / 2
+        ),
+        y = js.Array(
+          offsetM + textOffset,
+          offsetM - radius / 2,
+          offsetM + textOffset,
+          offsetM + textOffset
+        ),
+        text = js.Array("U", "A", "M", "r"),
+        mode = "text"
+      ).asInstanceOf[Partial[Data]]
+    )
+    val layout: Partial[Layout] =
+      dynLit(
+        xaxis = dynLit(
+          zeroline = true
+        ),
+        yaxis = dynLit(
+          zeroline = true
+        ),
+        width = diagramWidth,
+        height = diagramWidth,
+        shapes = js.Array(
+          dynLit(
+            `type` = "circle",
+            xref = "x",
+            yref = "y",
+            x0 = offsetM - radius,
+            y0 = offsetM - radius,
+            x1 = upper,
+            y1 = upper,
+            line = dynLit(
+              color = "rgba(50, 171, 96, 1)"
+            )
+          ),
+          dynLit(
+            `type` = "circle",
+            xref = "x",
+            yref = "y",
+            x0 = offsetM - 0.01 * radius,
+            y0 = offsetM - 0.01 * radius,
+            x1 = offsetM + 0.01 * radius,
+            y1 = offsetM + 0.01 * radius,
+            line = dynLit(
+              color = "rgba(171, 171, 96, 1)"
+            )
+          ),
+          dynLit(
+            `type` = "line",
+            x0 = offsetM,
+            y0 = offsetM,
+            x1 = upper,
+            y1 = offsetM,
+            line = dynLit(
+              color = "rgb(128, 0, 128, 0.5)",
+              width = 2
+            )
+          )
+        )
+      ).asInstanceOf[Partial[Layout]]
+
+    Graph.plot(
+      "plotCircle",
+      data,
+      layout
+    )
   }
 
 }

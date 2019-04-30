@@ -8,6 +8,8 @@ tags:
   - kreis
 ---
 
+{% include custom-toc.md %}
+
 # Definition
 Aus [Wikipedia](https://de.wikipedia.org/wiki/Kreis):
 > Ein Kreis ist eine ebene geometrische Figur. Er wird definiert als die Menge aller Punkte einer Ebene, die einen konstanten Abstand zu einem vorgegebenen Punkt dieser Ebene (dem **Mittelpunkt**) haben. Der Abstand der Kreispunkte zum Mittelpunkt ist der **Radius** oder _Halbmesser_ des Kreises.

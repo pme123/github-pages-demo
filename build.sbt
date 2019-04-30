@@ -4,7 +4,6 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.AutoImport.fastOptJS
 
 resolvers += Resolver.bintrayRepo("oyvindberg", "ScalablyTyped")
 
-
 enablePlugins(ScalaJSPlugin)
 enablePlugins(ScalaJSBundlerPlugin)
 
@@ -23,7 +22,7 @@ libraryDependencies ++= Seq(
 
 npmDependencies in Compile ++= Seq(
   "plotly.js" -> "1.47.2",
-  "mathjs" -> "5.0",
+  "mathjs" -> "5.0"
   // "mathjax" -> "2.7.2", // provided by the Github Pages Theme
   //  "jquery" -> "1.0.4",
   //  "semantic-ui" -> "2.2",
@@ -31,7 +30,9 @@ npmDependencies in Compile ++= Seq(
 
 libraryDependencies += "com.thoughtworks.binding" %%% "dom" % "latest.release"
 
-addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+addCompilerPlugin(
+  "org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full
+)
 
 lazy val copyTask = taskKey[Unit]("copyJS")
 

@@ -6,6 +6,7 @@ categories:
 tags:
   - math
   - division
+  - deutsch
 ---
 
 # Beispiele

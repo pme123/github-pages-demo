@@ -15,7 +15,7 @@ object GraphApp extends IntellijImplicits {
   val expressionVar: Var[String] = Var("x^2")
 
   @JSExportTopLevel("runJSGraph")
-  def main(): Unit = {
+  def runJSGraph(): Unit = {
     dom.render(document.getElementById("graphDiv"), plotly)
   }
 
@@ -24,7 +24,7 @@ object GraphApp extends IntellijImplicits {
     val expression = expressionVar.bind
     println(s"expression: $expression")
 
-    Graph.plotly(expression, "plotGraph")
+    Graph.plotGraph(expression, "plotGraph")
     <div class="ui form">
    <div class="field">
      <label>Formula</label>

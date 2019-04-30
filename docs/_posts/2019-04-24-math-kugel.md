@@ -6,7 +6,9 @@ categories:
 tags:
   - math
   - kugel
+  - deutsch
 ---
+
 # Oberfläche
 > Kugel-Oberfläche  \\[4*\\pi *r^2\\]
 
