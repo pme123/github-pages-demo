@@ -1,7 +1,7 @@
 # Goals
 * Use [Github Pages] for simple Project, that I could document and demo in the same place.
 
-* As a _Scala/ ScalaJS_ enthusiast I wanted to use them as much as possible.
+* Use _Scala/ ScalaJS_ technology.
 * Use _Markup_ for documentation.
 * Create simple Tutorials that:
   * print Mathematical formulas nicely
@@ -9,14 +9,14 @@
   * can interacted with
 
 # Examples
-## [How to use this project]
-## [Compile Mathematical Expressions]
-## [And more....]
+### [How to use this project]
+### [Compile Mathematical Expressions]
+### [And more....]
 
- # Github Pages
-Here is the result of this effort:
+# Result
+The result is a showcase on how to use different _Scala/ ScalaJS_ technologies in combination with Markup and [Github Pages] (check the references below).
 
-https://pme123.github.io/github-pages-demo/
+See yourself: **https://pme123.github.io/github-pages-demo/**
 
 # References
 
@@ -34,7 +34,7 @@ For any coding I use:
 - **Plot.ly** for painting diagrams and graphs: [Plotly JS]
 - **Math.js**  for evaluating mathematical string expressions: [MathJS]
 - **MathJax** for printing nice formulas in HTML: [MathJax] 
-- **Semantic-UI** styling the forms: [Semantic UI] 
+- **Semantic-UI** styling the forms (if the theme was not enough): [Semantic UI] 
 
 ## Building
 - **sbt** for building the project: [SBT]
@@ -55,6 +55,6 @@ For any coding I use:
 [Semantic UI]: https://semantic-ui.com
 [So Simple Theme]: https://github.com/mmistakes/so-simple-theme
 
-[How to use]: https://pme123.github.io/github-pages-demo/develop/2019/04/28/how-to.html
+[How to use this project]: https://pme123.github.io/github-pages-demo/develop/2019/04/28/how-to.html
 [Compile Mathematical Expressions]: https://pme123.github.io/github-pages-demo/math/2019/04/24/math-expression.html
 [And more....]: https://pme123.github.io/github-pages-demo/posts/
