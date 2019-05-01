@@ -7,6 +7,7 @@
   * print Mathematical formulas nicely
   * use Graphs for illustration
   * can interacted with
+  * display code snippets
 
 # Examples
 ### [How to use this project]
@@ -16,7 +17,7 @@ It's in german and shows a bit more of composition with [Binding.scala]
 ### [And more....]
 
 # Result
-The result is a showcase on how to use different _Scala/ ScalaJS_ technologies in combination with Markup and [Github Pages] (check the references below).
+The result is a showcase on how to use different _Scala/ ScalaJS_ tools in combination with Markup and [Github Pages] (check the references below).
 
 See yourself: **https://pme123.github.io/github-pages-demo/**
 
@@ -31,7 +32,7 @@ This project uses the following tools. All of them have excellent tutorials:
 ## Coding
 For any coding I use:
 - **ScalaJS** for general coding: [ScalaJS]
-- **Binding.scala** for data bindung: [Binding.scala]
+- **Binding.scala** for dom functionality and data binding: [Binding.scala]
 - **ScalablyTyped** for JavaScript facades: [Scalably Typed]
 - **Plot.ly** for painting diagrams and graphs: [Plotly JS]
 - **Math.js**  for evaluating mathematical string expressions: [MathJS]
