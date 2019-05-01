@@ -28,8 +28,10 @@ npmDependencies in Compile ++= Seq(
   //  "semantic-ui" -> "2.2",
 )
 
-libraryDependencies += "com.thoughtworks.binding" %%% "dom" % "latest.release"
-
+libraryDependencies ++= Seq(
+  "com.thoughtworks.binding" %%% "dom" % "latest.release",
+  "be.doeraene" %%% "scalajs-jquery" % "0.9.1"
+)
 addCompilerPlugin(
   "org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full
 )
@@ -39,9 +41,19 @@ lazy val copyTask = taskKey[Unit]("copyJS")
 copyTask := {
   val bundle = (Compile / fastOptJS / webpack).value.head
 
-  val destinationPath = file(s"docs/assets/javascripts/${bundle.data.name}").toPath
-  java.nio.file.Files.copy(bundle.data.toPath, destinationPath, StandardCopyOption.REPLACE_EXISTING)
-  val destinationPathMap = file(s"docs/assets/javascripts/${bundle.data.name}.map").toPath
+  val destinationPath =
+    file(s"docs/assets/javascripts/${bundle.data.name}").toPath
+  java.nio.file.Files.copy(
+    bundle.data.toPath,
+    destinationPath,
+    StandardCopyOption.REPLACE_EXISTING
+  )
+  val destinationPathMap =
+    file(s"docs/assets/javascripts/${bundle.data.name}.map").toPath
   val sourcePathMap = file(s"${bundle.data.toPath}.map").toPath
-  java.nio.file.Files.copy(sourcePathMap, destinationPathMap, StandardCopyOption.REPLACE_EXISTING)
+  java.nio.file.Files.copy(
+    sourcePathMap,
+    destinationPathMap,
+    StandardCopyOption.REPLACE_EXISTING
+  )
 }

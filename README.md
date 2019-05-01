@@ -1,5 +1,5 @@
 # Goals
-* Use [Github Pages] for simple Project, that I could document and demo in the same place.
+* Use [Github Pages] for simple Projects/ Show-cases, that I could document and demo in the same place.
 
 * Use _Scala/ ScalaJS_ technology.
 * Use _Markup_ for documentation.
@@ -11,6 +11,8 @@
 # Examples
 ### [How to use this project]
 ### [Compile Mathematical Expressions]
+### [Extended How-To Example]
+It's in german and shows a bit more of composition with [Binding.scala]
 ### [And more....]
 
 # Result
@@ -40,6 +42,9 @@ For any coding I use:
 - **sbt** for building the project: [SBT]
 - **scalajs-bundler** for bundling the JavaScript dependencies: [scalajs-bundler]
 
+# Check also
+If you want document everything in _Scala_ check out: https://sake92.github.io/hepek/
+
 [Binding.scala]: https://github.com/ThoughtWorksInc/Binding.scala
 [Git]: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 [Join Github]: https://github.com/join
@@ -57,4 +62,5 @@ For any coding I use:
 
 [How to use this project]: https://pme123.github.io/github-pages-demo/develop/2019/04/28/how-to.html
 [Compile Mathematical Expressions]: https://pme123.github.io/github-pages-demo/math/2019/04/24/math-expression.html
+[Extended How-To Example]: https://pme123.github.io/github-pages-demo/math/2019/04/24/math-kreis
 [And more....]: https://pme123.github.io/github-pages-demo/posts/

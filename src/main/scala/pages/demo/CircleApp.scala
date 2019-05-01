@@ -3,17 +3,13 @@ package pages.demo
 import com.thoughtworks.binding.Binding.Var
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.document
-import org.scalajs.dom.raw.{HTMLCanvasElement, HTMLElement}
-import org.scalajs.{dom => jsdom}
-import typings.mathjsLib.mathjsMod
-import typings.plotlyDotJsLib.plotlyDotJsMod.^._
-import typings.plotlyDotJsLib.plotlyDotJsMod.{Data, Layout, Margin}
+import org.scalajs.dom.raw.{Event, HTMLElement}
+import org.scalajs.jquery.jQuery
+import typings.plotlyDotJsLib.plotlyDotJsMod.{Data, Layout}
 import typings.stdLib.Partial
-import org.scalajs.dom.raw.{Event, FileReader, HTMLElement, HTMLInputElement}
-import scala.scalajs.js.Dynamic.{literal => dynLit}
 
-import scala.collection.immutable
 import scala.scalajs.js
+import scala.scalajs.js.Dynamic.{literal => dynLit}
 import scala.scalajs.js.annotation.JSExportTopLevel
 
 object CircleApp extends IntellijImplicits {
@@ -21,115 +17,131 @@ object CircleApp extends IntellijImplicits {
   val radiusVar: Var[Double] = Var(3.0)
   val offsetMVar: Var[Double] = Var(0)
   val diagramWidth = 500
+  val unit = s"\\(m\\)"
+  val unit2 = s"\\(m^2\\)"
 
   @JSExportTopLevel("runJSCircle")
   def runJSCircle(): Unit = {
     dom.render(document.getElementById("circleDiv"), printForm)
+    plotGraph.watch
   }
 
   @dom
   private lazy val printForm: Binding[HTMLElement] = {
-    val r = radiusVar.bind
-    println(s"new radius: $r")
-    val offsetM = offsetMVar.bind
-    println(s"new offsetM: $offsetM")
-    printGraph(r, offsetM)
 
-    val d = (2 * r)
-    val circumference = d * Math.PI
-    val area = r * r * Math.PI
-    val units = s"\\(m\\)"
-    val units2 = s"\\(m^2\\)"
     <div class="ui form">
       <table>
         <tbody>
-          <tr>
-            <td>Radius</td>
-            <td>r</td>
-            <td>
-              {s"\\(r\\)"}
-            </td>
-            <td>
-              <input class="right" type="text" name="radiusIn" id="radiusIn" placeholder="Radius" value={
-      s"$r"
-    } onblur={_: Event => radiusVar.value = radiusIn.value.toDouble}/>
-            </td>
-            <td>
-              {units}
-            </td>
-          </tr>
-          <tr>
-            <td>Durchmesser</td>
-            <td>d</td>
-            <td>
-              {s"\\(2*r\\)"}
-            </td>
-            <td>
-              <input class="right" type="text" id="diameterIn" placeholder="Diameter" value={
-      s"$d"
-    } onblur={_: Event => radiusVar.value = diameterIn.value.toDouble / 2}/>
-            </td> <td>
-            {units}
-          </td>
-          </tr>
-          <tr>
-            <td>Umfang</td>
-            <td>U</td>
-            <td>
-              {s"\\(2*\\pi *r\\)"}
-            </td>
-            <td>
-              <input class="right" type="text" name="circumferenceIn" id="circumferenceIn" placeholder="Circumference" value={
-      s"$circumference"
-    } onblur={
-      _: Event => radiusVar.value = circumferenceIn.value.toDouble / 2 / Math.PI
-    }/>
-            </td> <td>
-            {units}
-          </td>
-          <td>
-          {s"\\(r = \\frac{U}{2 * \\pi} \\)"}
-          </td>
-          </tr>
-          <tr>
-            <td>Fläche</td>
-            <td>A</td>
-            <td>
-              {s"\\(\\pi*r^2\\)"}
-            </td>
-            <td>
-              <input class="right" type="text" name="areaIn" id="areaIn" placeholder="Area" value={
-      s"$area"
-    } onblur={
-      _: Event => radiusVar.value = Math.sqrt(areaIn.value.toDouble / Math.PI)
-    }/>
-            </td> <td>
-            {units2}
-          </td>
-          <td>
-          {s"\\(r = \\sqrt{A/\\pi}\\)"}
-          </td>
-          </tr>
-          <tr>
-            <td>Mittelpunkt</td>
-            <td>M</td>
-            <td>
-              {s"\\((offsetX + r; offsetY + r)\\)"}
-            </td>
-            <td>
-              <input class="right" type="text" name="offsetIn" id="offsetIn" placeholder="Offset" value={
-      s"$offsetM"
-    } onblur={_: Event => offsetMVar.value = offsetIn.value.toDouble}/>
-            </td> <td>
-            {units}
-          </td>
-          </tr>
+          {Binding.Constants(
+          printRow("Radius",
+            "r",
+            None,
+            unit,
+            printInput(
+              "radiusIn",
+              radiusVar,
+              r => r,
+              r => radiusVar.value = r
+            ),
+            None
+          ),
+          printRow("Durchmesser",
+            "d",
+            Some("\\(2*r\\)"),
+            unit,
+            printInput(
+              "diameterIn",
+              radiusVar,
+              r => 2 * r,
+              d => radiusVar.value = d / 2
+            ),
+            Some("\\(r = d/2\\)")
+          ),
+          printRow("Umfang",
+            "U",
+            Some("\\(2*\\pi *r\\)"),
+            unit,
+            printInput(
+              "circumferenceIn",
+              radiusVar,
+              r => 2 * r * Math.PI,
+              c => radiusVar.value = c / 2 / Math.PI
+            ),
+            Some("\\(r = \\frac{U}{2 * \\pi} \\)")
+          ),
+          printRow("Fläche",
+            "A",
+            Some("\\(\\pi*r^2\\)"),
+            unit2,
+            printInput(
+              "areaIn",
+              radiusVar,
+              r => r * r * Math.PI,
+              area => radiusVar.value = Math.sqrt(area / Math.PI)
+            ),
+            Some("\\(r = \\sqrt{A/\\pi}\\)")
+          ),
+          printRow("Mittelpunkt",
+            "M",
+            Some("\\((offsetX + r; offsetY + r)\\)"),
+            unit,
+            printInput(
+              "centerIn",
+              offsetMVar,
+              o => o,
+              o => offsetMVar.value = o
+            ),
+            None
+          ),
+        ).map(_.bind)}
         </tbody>
       </table>
     </div>
   }
 
-  private def printGraph(radius: Double, offsetM: Double) = {
+  @dom
+  private def printRow(
+                        label: String,
+                        abbreviation: String,
+                        formula: Option[String] = None,
+                        unit: String,
+                        inputElement: Binding[HTMLElement],
+                        radiusFormula: Option[String] = None
+                      ) = {
+    <tr>
+      <td>
+        {label}
+      </td> <td>
+      {abbreviation}
+    </td> <td>
+      {formula.getOrElse("")}
+    </td> <td>
+      {inputElement.bind}
+    </td> <td>
+      {unit}
+    </td> <td>
+      {radiusFormula.getOrElse("")}
+    </td>
+    </tr>
+  }
+
+  @dom
+  private def printInput(
+                          inId: String,
+                          bindValue: Var[Double],
+                          calcValue: Double => Double,
+                          onBlur: Double => Unit
+                        ) = {
+    val v = bindValue.bind
+      <input class="right" type="text" id={s"CircleApp_$inId"}
+             value={s"${calcValue(v)}"}
+             onblur={_: Event => onBlur(jQuery(s"#CircleApp_$inId").value().toString.toDouble)}/>
+  }
+
+  private lazy val plotGraph = Binding {
+    val radius = radiusVar.bind
+    val offsetM = offsetMVar.bind
+
     val upper = offsetM + radius
     val textOffset = 0.03 * radius
     val data: js.Array[Data] = js.Array(
