@@ -11,6 +11,7 @@ name := "Simple Tutorials"
 scalaVersion := "2.12.7" // or any other Scala version >= 2.10.2
 
 webpackBundlingMode := BundlingMode.LibraryAndApplication()
+webpackConfigFile := Some(baseDirectory.value / "my.custom.webpack.config.js")
 
 libraryDependencies ++= Seq(
   ScalablyTyped.P.`plotly_dot_js`,
@@ -22,7 +23,8 @@ libraryDependencies ++= Seq(
 
 npmDependencies in Compile ++= Seq(
   "plotly.js" -> "1.47.2",
-  "mathjs" -> "5.0"
+  "mathjs" -> "5.0",
+  "ify-loader" -> "1.1.0"
   // "mathjax" -> "2.7.2", // provided by the Github Pages Theme
   //  "jquery" -> "1.0.4",
   //  "semantic-ui" -> "2.2",

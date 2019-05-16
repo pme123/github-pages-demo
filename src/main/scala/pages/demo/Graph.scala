@@ -1,7 +1,7 @@
 package pages.demo
 
 import typings.mathjsLib.mathjsMod.{^ => Mathjs}
-import typings.plotlyDotJsLib.plotlyDotJsMod.{Data, Layout, ^ => Plotlyjs}
+import typings.plotlyDotJsLib.plotlyDotJsMod.{Data, Layout, ^ => Plotly}
 import typings.stdLib.Partial
 import typings.mathjaxLib.MathJaxNs.{^ => MathJax}
 
@@ -47,7 +47,7 @@ object Graph extends IntellijImplicits {
 
   def plot(plotDiv: String, data: js.Array[Data], layout: Partial[Layout]) =
     setTimeout(200) {
-      Plotlyjs.newPlot(plotDiv, data, layout)
+      Plotly.newPlot(plotDiv, data, layout)
       if (!js.isUndefined(MathJax)) {
         MathJax.Hub.Queue(js.Array("Typeset", MathJax.Hub))
       }
