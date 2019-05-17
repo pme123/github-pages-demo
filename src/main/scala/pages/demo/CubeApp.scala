@@ -3,22 +3,21 @@ package pages.demo
 import com.thoughtworks.binding.Binding.Var
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.document
-import org.scalajs.dom.raw.{Event, HTMLElement}
-import org.scalajs.jquery.jQuery
+import org.scalajs.dom.raw.HTMLElement
+import typings.plotlyDotJsLib.plotlyDotJsMod._
 import typings.stdLib.Partial
-import typings.plotlyDotJsLib.plotlyDotJsMod.{Data, Layout, ^ => Plotly}
+import org.scalajs.jquery.jQuery
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => dynLit}
 import scala.scalajs.js.annotation.JSExportTopLevel
+import org.scalajs.dom.raw.Event
 
-object CubeApp extends IntellijImplicits {
+object CubeApp extends MathApp {
 
-  val radiusVar: Var[Double] = Var(3.0)
-  val offsetMVar: Var[Double] = Var(0)
-  val diagramWidth = 500
-  val unit = s"\\(m\\)"
-  val unit2 = s"\\(m^2\\)"
+  val lVar: Var[Double] = Var(1.0)
+  val bVar: Var[Double] = Var(1.0)
+  val hVar: Var[Double] = Var(1.0)
 
   @JSExportTopLevel("runJSCube")
   def runJSCube(): Unit = {
@@ -36,69 +35,79 @@ object CubeApp extends IntellijImplicits {
       Binding
         .Constants(
           printRow(
-            "Radius",
-            "r",
+            "Länge",
+            "l",
             None,
             unit,
             printInput(
-              "radiusIn",
-              radiusVar,
-              r => r,
-              r => radiusVar.value = r
+              "lIn",
+              (l, _, _) => l,
+              l => lVar.value = l
             ),
             None
           ),
           printRow(
-            "Durchmesser",
-            "d",
-            Some("\\(2*r\\)"),
+            "Breite",
+            "b",
+            None,
             unit,
             printInput(
-              "diameterIn",
-              radiusVar,
-              r => 2 * r,
-              d => radiusVar.value = d / 2
+              "bIn",
+              (_, b, _) => b,
+              b => bVar.value = b
             ),
-            Some("\\(r = d/2\\)")
+            None
+          ),
+          printRow(
+            "Höhe",
+            "h",
+            None,
+            unit,
+            printInput(
+              "hIn",
+              (_, _, h) => h,
+              h => hVar.value = h
+            ),
+            None
           ),
           printRow(
             "Umfang",
             "U",
-            Some("\\(2*\\pi *r\\)"),
+            Some("4*(l + b + h)"),
             unit,
             printInput(
               "circumferenceIn",
-              radiusVar,
-              r => 2 * r * Math.PI,
-              c => radiusVar.value = c / 2 / Math.PI
+              (l, b, h) => 4 * (l + b + h),
+              u => lVar.value = u / 4 - bVar.value - hVar.value
             ),
-            Some("\\(r = \\frac{U}{2 * \\pi} \\)")
+            Some("l = U/4 - b - h")
           ),
           printRow(
             "Fläche",
             "A",
-            Some("\\(\\pi*r^2\\)"),
+            Some("2*(l*b+l*h+b*h)"),
             unit2,
             printInput(
               "areaIn",
-              radiusVar,
-              r => r * r * Math.PI,
-              area => radiusVar.value = Math.sqrt(area / Math.PI)
+              (l, b, h) => 2 * (l * b + l * h + b * h),
+              area =>
+                lVar.value = (area / 2 - bVar.value * hVar.value) / (bVar.value + hVar.value)
             ),
-            Some("\\(r = \\sqrt{A/\\pi}\\)")
+            Some("l = \\frac{A/2 - (b*h)}{b+h}")
           ),
           printRow(
-            "Mittelpunkt",
-            "M",
-            Some("\\((offsetX + r; offsetY + r)\\)"),
-            unit,
+            "Volumen",
+            "V",
+            Some("l*b*h"),
+            unit3,
             printInput(
-              "centerIn",
-              offsetMVar,
-              o => o,
-              o => offsetMVar.value = o
+              "volIn",
+              (l, b, h) => l*b*h,
+              vol => 
+              {println(s"Volume: $vol")
+                lVar.value = vol / (bVar.value * hVar.value)}
             ),
-            None
+            Some("l = \\frac{V}{b*h}")
           )
         )
         .map(_.bind)
@@ -109,81 +118,55 @@ object CubeApp extends IntellijImplicits {
   }
 
   @dom
-  private def printRow(
-      label: String,
-      abbreviation: String,
-      formula: Option[String] = None,
-      unit: String,
-      inputElement: Binding[HTMLElement],
-      radiusFormula: Option[String] = None
-  ) = {
-    <tr>
-      <td>
-        {label}
-      </td> <td>
-      {abbreviation}
-    </td> <td>
-      {formula.getOrElse("")}
-    </td> <td>
-      {inputElement.bind}
-    </td> <td>
-      {unit}
-    </td> <td>
-      {radiusFormula.getOrElse("")}
-    </td>
-    </tr>
-  }
-
-  @dom
-  private def printInput(
+  protected def printInput(
       inId: String,
-      bindValue: Var[Double],
-      calcValue: Double => Double,
+      calcValue: (Double, Double, Double) => Double,
       onBlur: Double => Unit
-  ) = {
-    val v = bindValue.bind
+  ): Binding[HTMLElement] = {
+    val l = lVar.bind
+    val b = bVar.bind
+    val h = hVar.bind
     <input class="right" type="text" id={s"CubeApp_$inId"}
-             value={s"${calcValue(v)}"}
+             value={s"${calcValue(l, b, h)}"}
              onblur={
       _: Event => onBlur(jQuery(s"#CubeApp_$inId").value().toString.toDouble)
     }/>
   }
 
   private lazy val plotGraph = Binding {
-    val radius = radiusVar.bind
-    val offsetM = offsetMVar.bind
+    val l = lVar.bind
+    val b = bVar.bind
+    val h = hVar.bind
 
-    val upper = offsetM + radius
-    val textOffset = 0.03 * radius
     val data: js.Array[Data] = js.Array(
       dynLit(
-        x = js.Array(1,0,0,0,0,0,0,1,1,1,1,0),
-        y = js.Array(0,0,1,1,0,0,0,0,0,0,1,1),
-        z = js.Array(0,0,0,1,1,0,1,1,0,1,1,1),
+        x = js.Array(b, 0, 0, 0, 0, 0, 0, b, b, b, b, 0),
+        y = js.Array(0, 0, l, l, 0, 0, 0, 0, 0, 0, l, l),
+        z = js.Array(0, 0, 0, h, h, 0, h, h, 0, h, h, h),
         `type` = "scatter3d",
         mode = "lines",
         name = "Quader"
       ).asInstanceOf[Partial[Data]],
       dynLit(
-        x = js.Array(1, 1),
-        y = js.Array(1, 0),
+        x = js.Array(b, b),
+        y = js.Array(l, 0),
         z = js.Array(0, 0),
         `type` = "scatter3d",
         mode = "lines",
         name = "Länge"
       ).asInstanceOf[Partial[Data]],
       dynLit(
-        x = js.Array(1, 0),
-        y = js.Array(1, 1),
+        x = js.Array(b, 0),
+        y = js.Array(l, l),
         z = js.Array(0, 0),
         `type` = "scatter3d",
         mode = "lines",
         name = "Breite"
       ).asInstanceOf[Partial[Data]],
       dynLit(
-        x = js.Array(1, 1),
-        y = js.Array(1, 1),
-        z = js.Array(0, 1),
+        x = js.Array(b, b),
+        y = js.Array(l, l),
+        z = js.Array(0, h),
         `type` = "scatter3d",
         mode = "lines",
         name = "Höhe"
@@ -191,8 +174,16 @@ object CubeApp extends IntellijImplicits {
     )
     val layout: Partial[Layout] =
       dynLit(
-        width = diagramWidth,
-        height = diagramWidth
+        width = diagramWidth * 1.5,
+        height = diagramWidth,
+        scene = dynLit(
+          aspectmode = "data",
+          aspectratio = dynLit(
+            x = b,
+            y = l,
+            z = h
+          ).asInstanceOf[Partial[Point]]
+        ).asInstanceOf[Partial[Scene]]
       ).asInstanceOf[Partial[Layout]]
 
     Graph.plot(
