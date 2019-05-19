@@ -170,6 +170,14 @@ object CubeApp extends MathApp {
         `type` = "scatter3d",
         mode = "lines",
         name = "Höhe"
+      ).asInstanceOf[Partial[Data]],
+      dynLit(
+        x = js.Array(b, 0),
+        y = js.Array(l, 0),
+        z = js.Array(h, 0),
+        `type` = "scatter3d",
+        mode = "lines",
+        name = "Diagonale"
       ).asInstanceOf[Partial[Data]]
     )
     val layout: Partial[Layout] =
