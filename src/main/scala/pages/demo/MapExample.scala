@@ -4,18 +4,23 @@ import com.thoughtworks.binding.Binding.Var
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.document
 import org.scalajs.dom.raw.{Event, HTMLElement}
-import typings.plotlyDotJsLib.plotlyDotJsMod.{Data, Layout}
-import typings.stdLib.Partial
+import typings.openlayersLib
+import typings.openlayersLib.openlayersMod.layerNs.{Base, Tile}
+import typings.openlayersLib.openlayersMod.olxNs.{MapOptions, ViewOptions}
+import typings.openlayersLib.openlayersMod.olxNs.layerNs.TileOptions
+import typings.openlayersLib.openlayersMod.olxNs.sourceNs.OSMOptions
+import typings.openlayersLib.openlayersMod.sourceNs.OSM
+import typings.openlayersLib.openlayersMod.{View, projNs, Map => OLMap}
 
 import scala.scalajs.js
-import scala.scalajs.js.Dynamic.{literal => dynLit}
 import scala.scalajs.js.annotation.JSExportTopLevel
 
-object GraphExample2 {
+
+object MapExample {
 
   val radiusVar: Var[Double] = Var(3.0)
 
-  @JSExportTopLevel("exampleGraph2")
+  @JSExportTopLevel("mapExample")
   def exampleGraph2(plotDiv: String, formDiv: String): Unit = {
     dom.render(document.getElementById(formDiv), printForm(plotDiv))
     plotGraph(plotDiv).watch
@@ -33,7 +38,7 @@ object GraphExample2 {
               {s"\\(r\\)"}
             </td>
             <td>
-            {radiusInput.bind}
+              {radiusInput.bind}
             </td>
           </tr>
           <tr>
@@ -45,9 +50,9 @@ object GraphExample2 {
             <td>
               {areaInput.bind}
             </td>
-          <td>
-          {s"\\(r = \\sqrt{A/\\pi}\\)"}
-          </td>
+            <td>
+              {s"\\(r = \\sqrt{A/\\pi}\\)"}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -57,12 +62,8 @@ object GraphExample2 {
   @dom
   private lazy val radiusInput = {
     val r = radiusVar.bind
-    <input class="right" type="text" id="radiusIn2" placeholder="Radius" value={
-      s"$r"
-    } onblur={
-      _: Event => // adjust the radius on blur
-        radiusVar.value = radiusIn2.value.toDouble
-    }/>
+      <input class="right" type="text" id="radiusIn2" placeholder="Radius" value={s"$r"} onblur={_: Event => // adjust the radius on blur
+      radiusVar.value = radiusIn2.value.toDouble}/>
   }
 
   @dom
@@ -79,31 +80,25 @@ object GraphExample2 {
 
   private def plotGraph(plotDiv: String) = Binding {
     val radius = radiusVar.bind
+    val n = 8
+    ("X "*n)sliding n take n map println
 
-    val data: js.Array[Data] = js.Array() // we don't have data
-    val layout: Partial[Layout] =
-      dynLit(
-        xaxis = dynLit(
-          zeroline = true,
-          range = js.Array(-radius - 0.5, radius + 0.5)
-        ),
-        yaxis = dynLit(
-          zeroline = true,
-          range = js.Array(-radius - 0.5, radius + 0.5)
-        ),
-        width = 500,
-        height = 500,
-        shapes = js.Array( // the only shape is our circle
-          dynLit(
-            `type` = "circle",
-            x0 = -radius,
-            y0 = -radius,
-            x1 = radius,
-            y1 = radius
-          )
+    val myTileServer = new Tile(TileOptions(
+      source = new OSM(OSMOptions(
+        crossOrigin = null,
+        url = "http://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png"
+      ))
+    ))
+    new OLMap(MapOptions(
+      target = plotDiv,
+      layers = js.Array[Base](myTileServer),
+      view = new View(
+        ViewOptions(
+          center = projNs.fromLonLat(js.Tuple2(37.41, 8.82)),
+          zoom = 4
         )
-      ).asInstanceOf[Partial[Layout]] // Partial is not very nice done in the Facade
+      )
+    ))
 
-    Graph.plot(plotDiv, data, layout) // use the little helper to draw the Graph
   }
 }

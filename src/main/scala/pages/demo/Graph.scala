@@ -1,9 +1,9 @@
 package pages.demo
 
+import typings.mathjaxLib.MathJaxNs.{^ => MathJax}
 import typings.mathjsLib.mathjsMod.{^ => Mathjs}
 import typings.plotlyDotJsLib.plotlyDotJsMod.{Data, Layout, ^ => Plotly}
 import typings.stdLib.Partial
-import typings.mathjaxLib.MathJaxNs.{^ => MathJax}
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.{literal => dynLit}
