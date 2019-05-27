@@ -15,43 +15,34 @@ import typings.openlayersLib.openlayersMod.{View, projNs, Map => OLMap}
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExportTopLevel
 
-
 object MapExample {
 
-  val radiusVar: Var[Double] = Var(3.0)
+  val centerLatVar: Var[Double] = Var(47.06472)
+  val centerLonVar: Var[Double] = Var(8.524444)
 
   @JSExportTopLevel("mapExample")
-  def exampleGraph2(plotDiv: String, formDiv: String): Unit = {
-    dom.render(document.getElementById(formDiv), printForm(plotDiv))
-    plotGraph(plotDiv).watch
+  def mapExample(formDiv: String): Unit = {
+    dom.render(document.getElementById(formDiv), printForm)
+    plotGraph.watch
   }
 
   @dom
-  private def printForm(plotDiv: String): Binding[HTMLElement] = {
+  private lazy val printForm: Binding[HTMLElement] = {
     <div class="ui form">
       <table>
         <tbody>
           <tr>
-            <td>Radius</td>
-            <td>r</td>
+            <td>Latitute</td>
+            <td>lat</td>
             <td>
-              {s"\\(r\\)"}
-            </td>
-            <td>
-              {radiusInput.bind}
+              {latInput.bind}
             </td>
           </tr>
           <tr>
-            <td>Area</td>
-            <td>A</td>
+            <td>Longitute</td>
+            <td>lon</td>
             <td>
-              {s"\\(\\pi*r^2\\)"}
-            </td>
-            <td>
-              {areaInput.bind}
-            </td>
-            <td>
-              {s"\\(r = \\sqrt{A/\\pi}\\)"}
+              {lonInput.bind}
             </td>
           </tr>
         </tbody>
@@ -60,45 +51,46 @@ object MapExample {
   }
 
   @dom
-  private lazy val radiusInput = {
-    val r = radiusVar.bind
-      <input class="right" type="text" id="radiusIn2" placeholder="Radius" value={s"$r"} onblur={_: Event => // adjust the radius on blur
-      radiusVar.value = radiusIn2.value.toDouble}/>
+  private lazy val latInput = {
+    val lat = centerLatVar.bind
+    <input class="right" type="text" id="latIn" placeholder="Latitute" value={
+      s"$lat"
+    } onblur={_: Event => centerLatVar.value = latIn.value.toDouble}/>
   }
 
   @dom
-  private lazy val areaInput = {
-    val r = radiusVar.bind
-    val area = r * r * Math.PI
-    <input class="right" type="text" id="areaIn2" placeholder="Area" value={
-      s"$area"
-    } onblur={
-      _: Event => // adjust the radius with the area
-        radiusVar.value = Math.sqrt(areaIn2.value.toDouble / Math.PI)
-    }/>
+  private lazy val lonInput = {
+    val lon = centerLonVar.bind
+    <input class="right" type="text" id="lonIn" placeholder="Longitute" value={
+      s"$lon"
+    } onblur={_: Event => centerLonVar.value = lonIn.value.toDouble}/>
   }
 
-  private def plotGraph(plotDiv: String) = Binding {
-    val radius = radiusVar.bind
-    val n = 8
-    ("X "*n)sliding n take n map println
+  private lazy val plotGraph = Binding {
+    val lat = centerLatVar.bind
+    val lon = centerLonVar.bind
+    map.getView().setCenter(projNs.transform(js.Tuple2(lon, lat), "EPSG:4326", "EPSG:3857"))
+  }
 
-    val myTileServer = new Tile(TileOptions(
-      source = new OSM(OSMOptions(
-        crossOrigin = null,
-        url = "http://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png"
-      ))
-    ))
-    new OLMap(MapOptions(
-      target = plotDiv,
-      layers = js.Array[Base](myTileServer),
-      view = new View(
-        ViewOptions(
-          center = projNs.fromLonLat(js.Tuple2(37.41, 8.82)),
-          zoom = 4
+  lazy val map = {
+    val myTileServer = new Tile(
+      TileOptions(
+        source = new OSM()
+      )
+    )
+    new OLMap(
+      MapOptions(
+        target = "mapExample",
+        // projection= new OpenLayers.Projection("EPSG:900913"),
+        // displayProjection= new OpenLayers.Projection("EPSG:4326"),
+        layers = js.Array[Base](myTileServer),
+        view = new View(
+          ViewOptions(
+            center = projNs.fromLonLat(js.Tuple2(centerLonVar.value, centerLatVar.value)),
+            zoom = 10
+          )
         )
       )
-    ))
-
+    )
   }
 }

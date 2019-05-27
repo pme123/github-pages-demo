@@ -1,5 +1,5 @@
 ---
-title: "Maop Example"
+title: "Map Example"
 excerpt: "Experiment with Maps."
 categories:
   - Geography
@@ -11,4 +11,4 @@ tags:
 # Example
 <div id="mapExample"></div>
 <div id="mapDiv"></div>
-<script>mapExample("mapExample", "mapDiv");</script>
+<script>mapExample("mapDiv");</script>

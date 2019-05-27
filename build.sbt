@@ -27,7 +27,7 @@ npmDependencies in Compile ++= Seq(
   "mathjs" -> "5.0",
   "ify-loader" -> "1.1.0",
   "ol" -> "4.6.4",
-  "openlayers" -> "4.6.5",
+ // "openlayers" -> "4.6.5",
   
   // "mathjax" -> "2.7.2", // provided by the Github Pages Theme
   //  "jquery" -> "1.0.4",
