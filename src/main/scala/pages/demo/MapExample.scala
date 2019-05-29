@@ -6,14 +6,36 @@ import org.scalajs.dom.document
 import org.scalajs.dom.raw.{Event, HTMLElement}
 import typings.openlayersLib
 import typings.openlayersLib.openlayersMod.layerNs.{Base, Tile}
+import typings.openlayersLib.openlayersMod.{
+  EventsListenerFunctionType,
+  View,
+  eventsNs,
+  formatNs,
+  layerNs,
+  projNs,
+  sourceNs,
+  styleNs,
+  Map => OLMap
+}
+import scala.scalajs.js.timers.{SetTimeoutHandle, clearTimeout, setTimeout}
+
 import typings.openlayersLib.openlayersMod.olxNs.{MapOptions, ViewOptions}
-import typings.openlayersLib.openlayersMod.olxNs.layerNs.TileOptions
+import typings.openlayersLib.openlayersMod.olxNs.layerNs.{
+  TileOptions,
+  VectorOptions
+}
+import typings.openlayersLib.openlayersMod.olxNs.sourceNs.{
+  VectorOptions => SourceVectorOptions
+}
 import typings.openlayersLib.openlayersMod.olxNs.sourceNs.OSMOptions
-import typings.openlayersLib.openlayersMod.sourceNs.OSM
-import typings.openlayersLib.openlayersMod.{View, projNs, Map => OLMap}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExportTopLevel
+import typings.openlayersLib.openlayersMod.olxNs.styleNs.{
+  StrokeOptions,
+  StyleOptions
+}
+import typings.openlayersLib.openlayersMod.MapEvent
 
 object MapExample {
 
@@ -69,28 +91,78 @@ object MapExample {
   private lazy val plotGraph = Binding {
     val lat = centerLatVar.bind
     val lon = centerLonVar.bind
-    map.getView().setCenter(projNs.transform(js.Tuple2(lon, lat), "EPSG:4326", "EPSG:3857"))
+    map
+      .getView()
+      .setCenter(
+        projNs.transform(js.Tuple2(lon, lat), "EPSG:4326", "EPSG:3857")
+      )
   }
 
   lazy val map = {
-    val myTileServer = new Tile(
+    // Layer with the Map
+    val lmap = new Tile(
       TileOptions(
-        source = new OSM()
+        source = new sourceNs.OSM()
       )
     )
-    new OLMap(
+    // Layer with the GPX Track
+    val lgpx = new layerNs.Vector(
+      VectorOptions(
+        source = new sourceNs.Vector(
+          SourceVectorOptions(
+            url = "/assets/gps/rigi_kulm.gpx",
+            format = new formatNs.GPX()
+          )
+        ),
+        style = new styleNs.Style(
+          StyleOptions(
+            stroke = new styleNs.Stroke(
+              StrokeOptions(
+                color = "#f00",
+                width = 3
+              )
+            )
+          )
+        )
+      )
+    )
+
+    val olMap = new OLMap(
       MapOptions(
         target = "mapExample",
         // projection= new OpenLayers.Projection("EPSG:900913"),
         // displayProjection= new OpenLayers.Projection("EPSG:4326"),
-        layers = js.Array[Base](myTileServer),
+        layers = js.Array[Base](
+          lmap,
+          lgpx
+        ),
         view = new View(
           ViewOptions(
-            center = projNs.fromLonLat(js.Tuple2(centerLonVar.value, centerLatVar.value)),
+            center = projNs.fromLonLat(
+              js.Tuple2(centerLonVar.value, centerLatVar.value)
+            ),
             zoom = 10
           )
         )
       )
     )
+    setTimeout(500) {
+      val event: (js.Function1[eventsNs.Event, scala.Unit]) = {
+        (e: eventsNs.Event) =>
+          val view = olMap.getView()
+          if (view != null){
+            val center = view.getCenter()
+            if (center != null && center._1 > Double.MinValue && center._1 < Double.MaxValue) {
+              val center2 = projNs.transform(center, "EPSG:3857", "EPSG:4326")
+              centerLatVar.value = center2._2
+              centerLonVar.value = center2._1
+            }
+          }
+
+      }
+      olMap.on("moveend", event)
+    }
+    
+    olMap
   }
 }
